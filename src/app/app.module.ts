@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './pages/home/home.module';
 import { BookingListModule } from './pages/booking-list/booking-list.module';
 import { BookingModule } from './pages/booking/booking.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { BookingModule } from './pages/booking/booking.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     AppRoutingModule,
     HomeModule, 
     BookingListModule,
