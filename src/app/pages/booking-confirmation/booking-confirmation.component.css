@@ -1,7 +1,3 @@
-table {
-    width: 100%;
-}
-
 .divButton{
     display: flex;
     justify-content: flex-end;
@@ -14,4 +10,13 @@ table {
 mat-card{
     padding: 2rem;
     height: 100%;
+}
+
+mat-form-field{
+    margin: 1rem;  
+}
+
+.roomsCardContainer{
+    display: flex;
+    justify-content: center;
 }

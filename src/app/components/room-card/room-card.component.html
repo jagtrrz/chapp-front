@@ -1,0 +1,29 @@
+<mat-card class="example-card">
+    <mat-card-title-group>
+      <mat-card-title>{{ roomType }}</mat-card-title>
+      <mat-card-subtitle>{{ checkIn }} - {{ checkOut }}</mat-card-subtitle>
+      <img mat-card-xl-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" >
+    </mat-card-title-group>
+    <mat-card-content>
+        <ul>
+            <li>
+                Total Price {{ roomTotalPrice }}
+            </li>
+            <li>
+                Total nights {{ roomTotalNights }}
+            </li>
+            <li>
+                Price per night {{ roomPricePerNight }}
+            </li>
+            <li>
+                Room availables {{ roomAvailable }}
+            </li>
+            <li *ngIF="roomAvailable < 3">
+                LAST UNITS
+            </li>
+        </ul>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)="booking(room)">Booking</button>
+      </mat-card-actions>
+  </mat-card>

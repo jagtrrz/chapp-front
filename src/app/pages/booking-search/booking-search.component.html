@@ -1,0 +1,44 @@
+<mat-card>
+    <h2>Looking for a room</h2>
+    <div>
+        <form [formGroup]="form">
+            <mat-form-field appearance="fill">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate">
+                  <input matStartDate formControlName="check_in" placeholder="Check In">
+                  <input matEndDate formControlName="check_out" placeholder="Check Out">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label> People </mat-label>
+                <input
+                    [max]="4"
+                    [min]="1"
+                    required
+                    matInput 
+                    type="number"
+                    formControlName="number_of_guest"
+                    placeholder=""/>
+            </mat-form-field>
+        </form>
+        <div class="divButton">
+            <button 
+                [disabled]="!(form.valid && !form.untouched)"
+                mat-button color="primary" 
+                (click)="search()"> 
+                Search 
+            </button>
+        </div>
+    </div>
+    <div *ngIf="roomAvailableList.length > 0" >
+        <h2>Rooms available</h2>
+        <ng-container *ngFor="let room of roomAvailableList" class="roomsCardContainer">
+            <app-room-card
+                [room]="room"
+                (bookingEvent)="bookingEvent($event)">
+            </app-room-card>
+        </ng-container>
+    </div>
+</mat-card>

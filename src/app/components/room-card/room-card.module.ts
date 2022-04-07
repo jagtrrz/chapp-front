@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { RoomCardComponent } from './room-card.component';
 import { MaterialModule } from '../../material/material.module';
-import { BookingComponent } from './booking.component';
 
 @NgModule({
   declarations: [
-    BookingComponent
+    RoomCardComponent
   ],
   imports: [
-    CommonModule,
     MaterialModule
+  ],
+  exports: [
+    RoomCardComponent
   ]
 })
-export class BookingModule { }
+export class RoomCardModule { }

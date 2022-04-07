@@ -17,7 +17,9 @@ export class ApiService {
 
     getListBookings(params?: any): Observable<any>{
         const url = `${this.url}/bookings/`
-        return this.http.get(url, { params: params })
+        return this.http.get(url, { params: {
+            page: 1
+        } })
     }
 
     getRoomAvailable(params: any): Observable<any>{

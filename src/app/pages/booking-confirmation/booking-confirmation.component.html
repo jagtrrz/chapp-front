@@ -1,0 +1,39 @@
+<mat-card>
+    <h2>Complete the reservation</h2>
+    <div>
+        <form [formGroup]="form">
+            <mat-form-field appearance="fill">
+                <mat-label> Name </mat-label>
+                <input
+                    required
+                    matInput 
+                    type="text"
+                    formControlName="name"/>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label> Phone </mat-label>
+                <input
+                    required
+                    matInput 
+                    type="text"
+                    formControlName="phone"/>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label> Email </mat-label>
+                <input
+                    required
+                    matInput 
+                    type="email"
+                    formControlName="email"/>
+            </mat-form-field>
+        </form>
+        <div class="divButton">
+            <button 
+                [disabled]="!(form.valid && !form.untouched)"
+                mat-button color="primary" 
+                (click)="submitForm()"> 
+                Book 
+            </button>
+        </div>
+    </div>
+</mat-card>
