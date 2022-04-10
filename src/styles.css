@@ -1,4 +1,78 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;}
+
+
+.divButton{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cardContent{
+    margin-top: 2rem;
+}
+
+mat-form-field{
+    margin: 1rem;  
+}
+
+
+/* HOME PAGE */
+
+table {
+    width: 100%;
+}
+
+.card{
+
+    padding: 3rem !important;
+    height: 100%;
+    background-color: #ffff;
+}
+
+.h2{
+    color: #424242
+}
+
+/* ROOMS SEARCH LIST */
+
+.titleAndButton{
+    display: flex;
+    justify-content: space-between
+
+}
+
+.cardSearch{
+    margin: 1rem !important;
+    padding: 3rem !important;
+}
+
+.cardRooms{
+    margin: 1rem !important;
+    padding: 3rem !important;
+    height: auto;
+    background-color: #ffff;
+}
+
+li {
+    list-style: none
+}
+
+.divCards{
+    display: flex;
+    justify-content: center;
+    height: 50%
+}
+
+/* CONFDIRMATION */
+
+.cardConfirmation{
+    padding: 2rem;
+    height: 100%;
+}
+
+.divResume{
+    color: #424242 
+}
+

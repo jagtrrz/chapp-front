@@ -1,8 +1,17 @@
-<mat-card>
-    <h2>Looking for a room</h2>
+<mat-card class="cardSearch">
+    <div class="titleAndButton">
+        <h2>Looking for a room</h2>
+        <button 
+            mat-raised-button
+            color="primary" 
+            (click)="goBack()">
+            BACK
+        </button>
+    </div>
+    
     <div>
         <form [formGroup]="form">
-            <mat-form-field appearance="fill">
+            <mat-form-field [color]="colorControl.value" appearance="fill">
                 <mat-label>Enter a date range</mat-label>
                 <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate">
                   <input matStartDate formControlName="check_in" placeholder="Check In">
@@ -10,31 +19,48 @@
                 </mat-date-range-input>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
-              </mat-form-field>
+                <mat-error 
+                    *ngIf="form.get('check_in').errors && form.get('check_in').hasError('required') 
+                        || form.get('check_out').errors && form.get('check_out').hasError('required')">
+                    *This field is required
+                </mat-error>
+            </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label> People </mat-label>
                 <input
-                    [max]="4"
-                    [min]="1"
-                    required
                     matInput 
                     type="number"
                     formControlName="number_of_guest"
                     placeholder=""/>
+                <mat-error 
+                    *ngIf="form.get('number_of_guest').errors && form.get('number_of_guest').hasError('required')">
+                    *This field is required
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('number_of_guest').errors && form.get('number_of_guest').hasError('min')">
+                    *Minimum 1 guest
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('number_of_guest').errors && form.get('number_of_guest').hasError('max')">
+                    *Maximum 4 guests
+                </mat-error>
             </mat-form-field>
         </form>
         <div class="divButton">
             <button 
                 [disabled]="!(form.valid && !form.untouched)"
-                mat-button color="primary" 
+                mat-raised-button
+                color="primary" 
                 (click)="search()"> 
-                Search 
+                SEARCH 
             </button>
         </div>
     </div>
-    <div *ngIf="roomAvailableList.length > 0" >
-        <h2>Rooms available</h2>
-        <ng-container *ngFor="let room of roomAvailableList" class="roomsCardContainer">
+</mat-card>
+<mat-card class="cardRooms">
+    <div *ngIf="roomAvailableList.length > 0"  class="roomsCardContainer">
+        <h2 class="h2">Available Rooms</h2>
+        <ng-container *ngFor="let room of roomAvailableList">
             <app-room-card
                 [room]="room"
                 (bookingEvent)="bookingEvent($event)">

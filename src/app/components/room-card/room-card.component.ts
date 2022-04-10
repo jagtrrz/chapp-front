@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Room } from '../../interfaces/rooms.interfaces';
 
 @Component({
   selector: 'app-room-card',
@@ -6,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./room-card.component.css']
 })
 export class RoomCardComponent implements OnInit {
-  @Input() room: any
+  @Input() room: Room
 
   roomType: string = ''
   checkIn: string = ''
@@ -15,8 +16,9 @@ export class RoomCardComponent implements OnInit {
   roomTotalNights: number = 0
   roomPricePerNight: number = 0
   roomAvailable: number = 0
+  imageUrl: string = ''
 
-  @Output() bookingEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() bookingEvent: EventEmitter<Room> = new EventEmitter<Room>();
 
   constructor() { }
 
@@ -28,12 +30,10 @@ export class RoomCardComponent implements OnInit {
     this.roomTotalNights = this.room.total_nights
     this.roomPricePerNight = this.room.price_per_night
     this.roomAvailable = this.room.total_available
+    this.imageUrl = this.room.image_url
   }
 
   booking(room: any){
-    console.log(event);
-    
     this.bookingEvent.emit(room)
   }
-
 }

@@ -8,6 +8,7 @@ import { HomeModule } from './pages/home/home.module';
 import { BookingConfirmationModule } from './pages/booking-confirmation/booking-confirmation.module';
 import { BookingSearchModule } from './pages/booking-search/booking-search.module';
 import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,4 +26,5 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

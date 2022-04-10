@@ -1,11 +1,14 @@
 import * as moment_ from "moment";
 
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, Subject, takeUntil } from "rxjs";
+import { Location } from "@angular/common";
+import { Subject } from 'rxjs';
 import { HttpParams } from "@angular/common/http";
-import { ApiService } from "src/app/services/api.service";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
+
+import { ApiService } from "src/app/services/api.service";
+import { Room } from "../../interfaces/rooms.interfaces";
 
 const moment = moment_;
 
@@ -14,7 +17,7 @@ const moment = moment_;
   templateUrl: './booking-search.component.html',
   styleUrls: ['./booking-search.component.css']
 })
-export class BookingSearchComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BookingSearchComponent implements OnInit, OnDestroy {
 
   form: FormGroup
 
@@ -23,60 +26,62 @@ export class BookingSearchComponent implements OnInit, OnDestroy, AfterViewInit 
 
   unsubscribe = new Subject();
 
-  roomsAvailable = new Subject();
-  roomAvailableList: any[] = []
+  roomAvailableList: Room[] = []
+
+  colorControl = new FormControl('primary');
+
+  urlParams: any
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) { 
     const currentYear = new Date().getFullYear();
     this.minDate = new Date()
     this.maxDate = new Date(currentYear, 11, 31);
-
-    this.form = this.formBuilder.group({
-      check_in: ["", Validators.required],
-      check_out: ["", Validators.required],
-      number_of_guest: ["", Validators.required]
-    })
   }
 
-  ngOnInit(): void {
-    console.log(this.route.snapshot.queryParams);
-    // if(this.route.snapshot.queryParams['params']){
-    //   console.log(typeof this.route.snapshot.queryParams);
+  ngOnInit(): void { 
+    const params = this.route.snapshot.queryParams;
+    const { check_in, check_out, number_of_guest } = params
 
-    //   const params = JSON.parse(this.route.snapshot.queryParams);
+    if(check_in && check_out && number_of_guest) {
+      this.urlParams = {
+        check_in: check_in,
+        check_out: check_out, 
+        number_of_guest: number_of_guest
+      }
+      let _params = new HttpParams()
+        .set('check_in', check_in)
+        .set('check_out', check_out)
+        .set('number_of_guest', number_of_guest)
 
-    //   console.log(params);
-      
-      
-    //   this.doTheSearch(this.route.snapshot.queryParams)
-    // }
-    
+      this.initForm(params)
+      this.doSearch(_params)
+    } else {
+      this.initForm(null)
+    }
   }
 
   ngOnDestroy(): void {
     this.unsubscribe.unsubscribe()
   }
 
-  ngAfterViewInit(): void {
-    this.roomsAvailable
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((rooms: any) => {
-
-        rooms.forEach((room: any) =>{
-          this.roomAvailableList.push(room)
-        })
-      })
+  initForm(params: any){
+    this.form = this.formBuilder.group({
+      check_in:  new FormControl(params ? params.check_in : "", Validators.required),
+      check_out:  new FormControl(params ? params.check_out : "", Validators.required),
+      number_of_guest:  new FormControl(params ? params.number_of_guest : "",  [Validators.min(1), Validators.max(4), Validators.required])
+    })
   }
 
 
   search(){
     this.roomAvailableList = []
-    
+
     const body = this.form.getRawValue()
 
     const checkIn = moment(body['check_in']).format('YYYY-MM-DD')
@@ -84,41 +89,48 @@ export class BookingSearchComponent implements OnInit, OnDestroy, AfterViewInit 
 
     body['check_in'] = checkIn
     body['check_out'] = checkOut
-    
-    console.log(body);
 
-    let params = new HttpParams();
-
-
-    Object.keys(body).forEach(key => {
-        params = params.append(key, body[key]);
-    });
+    this.urlParams = {
+      check_in: checkIn,
+      check_out: checkOut, 
+      number_of_guest: body['number_of_guest']
+    }
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {
-        params
-      },
+      queryParams: this.urlParams,
     })
 
-    this.doTheSearch(params)
+    let params = new HttpParams();
+    Object.keys(body).forEach(key => {
+      params = params.append(key, body[key]);
+    });
+
+    this.doSearch(params)
   }
 
-  doTheSearch(params: any){
-    this.apiService.getRoomAvailable(params).subscribe(
-      response => {
-        console.log(response);
-        this.roomsAvailable.next(response)
+  doSearch(params: HttpParams){
+    return this.apiService.getRoomsAvailable(params)
+      .subscribe((response: Room[]) => {
+        response.forEach((room: Room) =>{
+          this.roomAvailableList.push(room)
+        })
       }
     )
   }
 
-  bookingEvent(room: any){
+  bookingEvent(room: Room){
+    const urlParams = Object.assign(this.urlParams, {id: room.id})
     const navigationExtras: NavigationExtras = {
       state: {
         room: room,
-      }
+      },
+      queryParams: urlParams
     }
     this.router.navigate(['booking-confirmation'], navigationExtras)
+  }
+
+  goBack(){
+    this.location.back();
   }
 }

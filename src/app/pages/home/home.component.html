@@ -1,7 +1,7 @@
-<mat-card>
-    <h2>Reservas realizadas</h2>
+<mat-card class="card">
+    <h2 class="h2">Reservas realizadas</h2>
     <div class="divButton">
-        <button mat-button color="primary" (click)="goSearchBookingPage()"> Crear Reserva </button>
+        <button mat-raised-button color="primary" (click)="goSearchBookingPage()"> Search Room </button>
     </div>
     <mat-card-content class="cardContent">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -36,6 +36,21 @@
               <td mat-cell *matCellDef="let element"> {{element.check_out | date:'shortDate'}} </td>
             </ng-container>
 
+            <ng-container matColumnDef="total_nights">
+              <th mat-header-cell *matHeaderCellDef> Total Nights </th>
+              <td mat-cell *matCellDef="let element"> {{element.total_nights }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="contact_name">
+              <th mat-header-cell *matHeaderCellDef> Contact Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.contact.name }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="contact_phone">
+              <th mat-header-cell *matHeaderCellDef> Contact Phone </th>
+              <td mat-cell *matCellDef="let element"> {{element.contact.phone}} </td>
+            </ng-container>
+
             <ng-container matColumnDef="total_price">
               <th mat-header-cell *matHeaderCellDef> Total € </th>
               <td mat-cell *matCellDef="let element"> {{element.total_price}} € </td>
@@ -51,8 +66,10 @@
         </table>
     </mat-card-content>
     <mat-paginator 
-        [length]="count"
-        [pageSize]="10"
-        aria-label="Select page">
+      (page)="pageChanged($event)"
+      [length]="count"
+      [pageSize]="currentPageSize"
+      [pageIndex]="currentPageNumber"
+      aria-label="Select page">
     </mat-paginator>
 </mat-card>

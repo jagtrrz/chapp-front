@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
+import { PageEvent } from '@angular/material/paginator';
 
 import { ApiService } from '../../services/api.service';
-import { environment } from 'src/environments/environment';
+import { Bookings, BookingListResponse } from '../../interfaces/booking.interfaces';
+
 
 @Component({
   selector: 'app-home',
@@ -21,43 +24,82 @@ export class HomeComponent implements OnInit, OnDestroy {
     'number_of_guests', 
     'check_in',
     'check_out',
-    'total_price', 
+    'total_nights',
+    'total_price',
+    'contact_name',
+    'contact_phone', 
     'creation_date'
   ];
   
-  dataSource: any;
+  dataSource: Bookings[];
 
-  PAGE_START = 0;
-  PAGE_SIZE = 10;
-  currentPageNumber = this.PAGE_START;
-  currentPageSize = this.PAGE_SIZE;
+  PAGE_START: number = 0;
+  PAGE_SIZE: number = 10;
+  currentPageNumber: number = this.PAGE_START;
+  currentPageSize: number = this.PAGE_SIZE;
   count = 0;
+  page = 1
+
+  params: HttpParams = new HttpParams()
+    .set('page', this.page)
 
   constructor(
     private router: Router,
-    private apiService: ApiService
+    private route: ActivatedRoute ,
+    private apiService: ApiService,
   ) { 
-    console.log(environment.api);
+    this.route.queryParams
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe((params: any) => {
+
+        const { page } = params;
+
+        if(page) {
+          this.page = page
+          this.currentPageNumber = page - 1
+          this.params = new HttpParams()
+            .set('page', page)
+          
+          this.getData(this.params)
+        } else {
+          this.getData(this.params)
+        }
+      })
   }
 
   ngOnInit(): void {
-    this.getData()
   }
 
   ngOnDestroy(){
     this.unsubscribe.unsubscribe()
   }
 
-  getData(){
-    return this.apiService.getListBookings()
+  getData(params: any){
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.page
+      }
+    })
+    return this.apiService.getListBookings(params)
       .pipe(takeUntil(this.unsubscribe))
-      .subscribe((response: any) => {
+      .subscribe((response: BookingListResponse) => {
 
         if(response){
           this.dataSource = response.results
           this.count = response.count
         }
       })
+  }
+
+  pageChanged($event: PageEvent) {
+    this.page = $event.pageIndex + 1
+    this.currentPageNumber = $event.pageIndex
+
+    this.params = new HttpParams()
+      .set('page', this.page)
+
+    this.getData(this.params)
   }
 
   goSearchBookingPage(){

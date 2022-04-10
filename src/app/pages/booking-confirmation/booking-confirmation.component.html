@@ -1,5 +1,13 @@
-<mat-card>
-    <h2>Complete the reservation</h2>
+<mat-card class="cardSearch">
+    <div class="titleAndButton">
+        <h2>Contact Form</h2>
+        <button 
+            mat-raised-button
+            color="primary" 
+            (click)="goBack()">
+            BACK
+        </button>
+    </div>
     <div>
         <form [formGroup]="form">
             <mat-form-field appearance="fill">
@@ -9,6 +17,18 @@
                     matInput 
                     type="text"
                     formControlName="name"/>
+                <mat-error 
+                    *ngIf="form.get('name').errors && form.get('name').hasError('required')">
+                    *This field is required
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('name').errors && form.get('name').hasError('minlength')">
+                    *This name is too short
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('name').errors && form.get('name').hasError('maxlength')">
+                    *This name is too long
+                </mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label> Phone </mat-label>
@@ -17,23 +37,58 @@
                     matInput 
                     type="text"
                     formControlName="phone"/>
+                <mat-error 
+                    *ngIf="form.get('phone').errors && form.get('phone').hasError('required')">
+                    *This field is required
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('phone').errors && form.get('phone').hasError('minlength')">
+                    *This phone is too short
+                </mat-error>
+                <mat-error 
+                    *ngIf="form.get('phone').errors && form.get('phone').hasError('maxlength')">
+                    *This phone is too long
+                </mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label> Email </mat-label>
                 <input
-                    required
                     matInput 
                     type="email"
                     formControlName="email"/>
+                    <mat-error 
+                        *ngIf="form.get('email').errors && form.get('email').hasError('required')">
+                        *This field is required
+                    </mat-error>
+                    <mat-error 
+                        *ngIf="form.get('email').errors && form.get('email').hasError('email')">
+                        *Invalid format. Example (xxxx@xxx.xxx)
+                    </mat-error>
             </mat-form-field>
         </form>
         <div class="divButton">
             <button 
                 [disabled]="!(form.valid && !form.untouched)"
-                mat-button color="primary" 
+                mat-raised-button 
+                color="primary" 
                 (click)="submitForm()"> 
                 Book 
             </button>
         </div>
     </div>
+</mat-card>
+<mat-card class="cardRooms">
+    <div>
+        <h2 class="h2">
+            Resume
+        </h2>
+    </div>
+    <div class="divResume" *ngIf="roomInfo">
+        <p>Check In: {{ roomInfo.check_in }}</p>
+        <p>Check Out: {{ roomInfo.check_out }}</p>
+        <p>Total Price: {{ roomInfo.total_price }} €</p>
+        <p>Room Type: {{ roomInfo.room_type }}</p>
+        <p>Guests: {{ roomInfo.number_of_guests }}</p>
+    </div>
+
 </mat-card>
